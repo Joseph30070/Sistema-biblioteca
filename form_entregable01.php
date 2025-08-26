@@ -29,10 +29,11 @@
             <label for="categoria">Categoría:</label>
             <input type="text" name="categoria" id="categoria" required>
 
-            <input type="button" value="Registrar" onclick="registrarLibro();">
+            <input type="submit" value="Registrar">
         </form>
     </section>
 
+    <!-- Aquí se mostrará el mensaje -->
     <div id="Muestra"></div>
 
     <!-- Botones de navegación -->
@@ -41,35 +42,29 @@
         <a href="eliminar_libros.php" class="btn">Eliminar Libro</a>
         <a href="actualizar_libros.php" class="btn">Actualizar Libro</a>
     </div>
+
     <script>
-        function registrarLibro() {
-            var titulo = document.getElementById('titulo').value;
-            var autor = document.getElementById('autor').value;
-            var precio = document.getElementById('precio').value;
-            var stock = document.getElementById('stock').value;
-            var categoria = document.getElementById('categoria').value;
+        $(document).ready(function(){
+            $("#formRegistrarLibro").on("submit", function(e){
+                e.preventDefault(); // evita que el form recargue la página
 
-            var datos = "titulo=" + titulo + "&autor=" + autor + "&precio=" + precio + "&stock=" + stock + "&categoria=" + categoria;
-
-            $.ajax({
-                url: 'guardarlibros.php',
-                type: 'POST',
-                data: datos,
-            })
-            .done(function(respuesta) {
-                $('#Muestra').html(respuesta);
-            })
-            .fail(function() {
-                console.log("Error en la solicitud.");
-            })
-            .always(function() {
-                console.log("Operación completada.");
+                $.ajax({
+                    url: 'guardarlibros.php', // 👈 usa el nombre correcto
+                    type: 'POST',
+                    data: $(this).serialize(), // envía todos los campos del form
+                    success: function(respuesta){
+                        $("#Muestra").html("<p style='color:green; font-weight:bold;'>" + respuesta + "</p>");
+                        $("#formRegistrarLibro")[0].reset(); // limpia los campos del formulario
+                    },
+                    error: function(){
+                        $("#Muestra").html("<p style='color:red;'>Error en la solicitud.</p>");
+                    }
+                });
             });
-        }
+        });
     </script>
-
-
 </body>
 </html>
+
 
 
